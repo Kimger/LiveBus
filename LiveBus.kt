@@ -22,6 +22,10 @@ class LiveBus {
         var holder = LiveBus()
     }
 
+    /**
+     * @param tag 用来区分不同的订阅者，必传并且唯一
+     * @param eventKey 事件的key
+     */
     fun <T> subscribe(tag: Any, eventKey: Any): BusData<T> {
         checkNotNull(tag)
         checkNotNull(eventKey)
