@@ -1,7 +1,23 @@
 # LiveBus
 LiveData实现Android时间总线
-## 用法
+LiveBus.java使用Java实现
+LiveBus.kt使用Kotlin实现
+调用方法略有差异
+---
+# 用法
 
+### subscribe(param tag,param eventKey)
+tag:事件订阅者唯一标识，不可为空并且唯一
+eventKey:事件key
++ Kotlin 在方法名后传递消息类型泛型 subscribe<T>()
++ Java 在方法名前传递消息类型泛型 <T>subscribe()
+### subscribe(param tag,param eventKey,param class)
+<font color="#bc261a">使用此方法无需传入泛型，返回类型的判断依照传入的class参数来判断</font>
+tag:事件订阅者唯一标识，不可为空并且唯一
+eventKey:事件key
+class:事件消息类型
+
+--- 
 ### Kotlin
 接收
 ```kotlin
@@ -13,7 +29,7 @@ LiveBus.default.postValue(eventKey, value)
 ```
 
 ## subcribe泛型为要传递的事件的类型，Tag为必传，并且不同接收者不能相同
-
+--- 
 ### Java
 接收
 ```java
