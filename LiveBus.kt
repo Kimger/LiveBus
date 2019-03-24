@@ -54,7 +54,7 @@ class LiveBus {
         }
     }
 
-    inner class BusData<T> constructor(tag: Any) : MutableLiveData<T>(), onChangedListener {
+    class BusData<T> constructor(tag: Any) : MutableLiveData<T>(), onChangedListener {
 
         private var isFirst = true
 
@@ -77,7 +77,7 @@ class LiveBus {
         }
     }
 
-    inner class ObserverWarpper<T> constructor(
+    class ObserverWarpper<T> constructor(
         private var observer: Observer<T>, private var isFirst: Boolean,
         private var listener: onChangedListener
     ) :
