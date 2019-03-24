@@ -18,7 +18,8 @@ eventKey:事件key
 
 ### subscribe(param tag,param eventKey,param class)
 
-<font color="#bc261a" size = "4">使用此方法无需传入泛型，返回类型的判断依照传入的class参数来判断</font>
+<font color=#bc261a size = 4>使用此方法无需传入泛型，返回类型的判断依照传入的class参数来判断</font>
+
 tag:事件订阅者唯一标识，不可为空并且唯一
 eventKey:事件key
 class:事件消息类型
