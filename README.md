@@ -12,6 +12,8 @@ LiveBus.default.subscribe<T>(tag, eventKey).observe(this, Observer { t -> doSome
 LiveBus.default.postValue(eventKey, value)
 ```
 
+## subcribe泛型为要传递的事件的类型，Tag为必传，并且不同接收者不能相同
+
 ### Java
 接收
 ```java
