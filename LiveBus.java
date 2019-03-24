@@ -1,5 +1,3 @@
-package com.mszs.android.suipaoandroid.activity;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
