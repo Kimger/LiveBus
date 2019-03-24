@@ -13,8 +13,8 @@ LiveBus.kt使用Kotlin实现
 - tag:事件订阅者唯一标识，不可为空并且唯一
 - eventKey:事件key
 
-- Kotlin 在方法名后传递消息类型泛型 subscribe<T>()
-- Java 在方法名前传递消息类型泛型 <T>subscribe()
+Kotlin 在方法名后传递消息类型泛型 subscribe<T>()
+Java 在方法名前传递消息类型泛型 <T>subscribe()
 
 ### subscribe(param tag,param eventKey,param class)
 
