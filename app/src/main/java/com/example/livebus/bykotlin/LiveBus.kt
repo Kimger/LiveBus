@@ -16,8 +16,10 @@ class LiveBus {
     private var events = HashMap<Any, ArrayList<BusData<Any>>>()
     private var cacheMsg = HashMap<Any, ArrayList<Any>>()
 
+
     companion object {
         var default = SingletonHolder.holder
+        private val tag = Exception().stackTrace[1].className + Exception().stackTrace[1].methodName
     }
 
     private object SingletonHolder {
@@ -28,7 +30,21 @@ class LiveBus {
      * 普通事件订阅
      */
     fun <T> subscribe(clazz: Class<T>): BusData<T> {
-        return subscribe(clazz.canonicalName!!, clazz.canonicalName!!, clazz) as BusData<T>
+        return subscribe(tag, clazz.canonicalName!!, clazz) as BusData<T>
+    }
+
+    /**
+     * 普通事件订阅
+     */
+    fun <T> subscribe(eventKey: Any): BusData<T> {
+        return subscribe(tag, eventKey, Any::class.java) as BusData<T>
+    }
+
+    /**
+     * 普通事件订阅
+     */
+    fun <T> subscribe(eventKey: Any, clazz: Class<T>): BusData<T> {
+        return subscribe(tag, eventKey, clazz, false)
     }
 
     /**
@@ -49,7 +65,21 @@ class LiveBus {
      * 黏性事件订阅
      */
     fun <T> subscribeSticky(clazz: Class<T>): BusData<T> {
-        return subscribeSticky(clazz.canonicalName!!, clazz.canonicalName!!, clazz) as BusData<T>
+        return subscribeSticky(tag, clazz.canonicalName!!, clazz) as BusData<T>
+    }
+
+    /**
+     * 黏性事件订阅
+     */
+    fun <T> subscribeSticky(eventKey: Any): BusData<T> {
+        return subscribeSticky(tag, eventKey, Any::class.java) as BusData<T>
+    }
+
+    /**
+     * 黏性事件订阅
+     */
+    fun <T> subscribeSticky(eventKey: Any, clazz: Class<T>): BusData<T> {
+        return subscribe(tag, eventKey, clazz, true)
     }
 
     /**
@@ -73,6 +103,7 @@ class LiveBus {
     fun post(value: Any) {
         post(value::class.java.canonicalName!!, value)
     }
+
     /**
      * 黏性事件(只能发送实体类)
      * @param value 要发送的消息

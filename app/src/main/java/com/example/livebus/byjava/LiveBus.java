@@ -21,8 +21,10 @@ import java.util.Map;
 public class LiveBus {
     private Map<Object, List<BusData<Object>>> events = new HashMap<>();
     private Map<Object, List<Object>> cacheMsg = new HashMap<>();
+    private static String tag;
 
     public static LiveBus getDefault() {
+        tag = new Exception().getStackTrace()[1].getClassName() + new Exception().getStackTrace()[1].getMethodName();
         return SingletonHolder.instance;
     }
 
@@ -35,7 +37,23 @@ public class LiveBus {
      */
     @SuppressWarnings("unchecked")
     public <T> BusData<T> subscribe(Class<T> tClass) {
-        return (BusData<T>) subscribe(tClass.getCanonicalName(), tClass.getCanonicalName(), tClass);
+        return (BusData<T>) subscribe(tag, tClass.getCanonicalName(), tClass);
+    }
+
+    /**
+     * 普通事件订阅
+     */
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribe(Object eventKey) {
+        return (BusData<T>) subscribe(tag, eventKey, Object.class);
+    }
+
+    /**
+     * 普通事件订阅
+     */
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribe(Object eventKey, Class<T> tClass) {
+        return (BusData<T>) subscribe(tag, eventKey, tClass, false);
     }
 
     /**
@@ -59,7 +77,15 @@ public class LiveBus {
      */
     @SuppressWarnings("unchecked")
     public <T> BusData<T> subscribeSticky(Class<T> tClass) {
-        return (BusData<T>) subscribeSticky(tClass.getCanonicalName(), tClass.getCanonicalName(), tClass);
+        return (BusData<T>) subscribeSticky(tag, tClass.getCanonicalName(), tClass);
+    }
+
+    /**
+     * 黏性事件订阅
+     */
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribeSticky(Object eventKey) {
+        return (BusData<T>) subscribeSticky(tag, eventKey, Object.class);
     }
 
     /**
@@ -68,6 +94,14 @@ public class LiveBus {
     @SuppressWarnings("unchecked")
     public <T> BusData<T> subscribeSticky(Object tag, Object eventKey) {
         return (BusData<T>) subscribeSticky(tag, eventKey, Object.class);
+    }
+
+    /**
+     * 黏性事件订阅
+     */
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribeSticky(Object eventKey, Class<T> tClass) {
+        return (BusData<T>) subscribe(tag, eventKey, tClass, true);
     }
 
     /**
@@ -193,6 +227,7 @@ public class LiveBus {
         }
     }
 
+
     public class BusData<T> extends MutableLiveData<T> implements OnChangedListener {
         private boolean isFitst = true;
         private Object tag;
@@ -260,4 +295,6 @@ public class LiveBus {
         }
         return reference;
     }
+
+
 }
