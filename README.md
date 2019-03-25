@@ -8,6 +8,12 @@ LiveBus.kt使用Kotlin实现
 
 # 用法
 
+### post(param eventKey,param value)
+- eventKey:事件key
+- value:事件
+### postSticky(param eventKey,param value)
+同上，支持黏性事件（先发送，再订阅）
+
 ### subscribe(param tag,param eventKey)
 
 - tag:事件订阅者唯一标识，不可为空并且唯一
@@ -24,6 +30,8 @@ Java 在方法名前传递消息类型泛型 <T>subscribe()
 - eventKey:事件key
 - class:事件消息类型
 
+### subscribeSticky
+黏性时间订阅，使用方法同上
 ------
 
 ### Kotlin
