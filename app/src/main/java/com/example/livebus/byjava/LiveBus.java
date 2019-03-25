@@ -242,14 +242,9 @@ public class LiveBus {
         }
 
         boolean isThis(Object tag) {
-            if (tag instanceof String) {
-                if (this.tag.equals(tag)) {
-                    return true;
-                }
-                if (this.tag.getClass().getCanonicalName().equals(tag.getClass().getCanonicalName())) {
-                    this.tag = tag;
-                    return true;
-                }
+            if (this.tag.equals(tag)) {
+                this.tag = tag;
+                return true;
             }
             return false;
         }

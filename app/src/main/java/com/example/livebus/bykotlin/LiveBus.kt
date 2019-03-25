@@ -216,12 +216,7 @@ class LiveBus {
         }
 
         fun isThis(tag: Any): Boolean {
-            if (tag is String) {
-                if (this.tag == tag) {
-                    return true
-                }
-            }
-            if (this.tag.javaClass.canonicalName == tag.javaClass.canonicalName) {
+            if (this.tag == tag) {
                 this.tag = tag
                 return true
             }
