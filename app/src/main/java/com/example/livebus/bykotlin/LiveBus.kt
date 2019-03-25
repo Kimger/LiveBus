@@ -48,6 +48,13 @@ class LiveBus {
     /**
      * 黏性事件订阅
      */
+    fun <T> subscribeSticky(clazz: Class<T>): BusData<T> {
+        return subscribeSticky(clazz.canonicalName!!, clazz.canonicalName!!, clazz) as BusData<T>
+    }
+
+    /**
+     * 黏性事件订阅
+     */
     fun <T> subscribeSticky(tag: Any, eventKey: Any): BusData<T> {
         return subscribeSticky(tag, eventKey, Any::class.java) as BusData<T>
     }
@@ -65,6 +72,13 @@ class LiveBus {
      */
     fun post(value: Any) {
         post(value::class.java.canonicalName!!, value)
+    }
+    /**
+     * 黏性事件(只能发送实体类)
+     * @param value 要发送的消息
+     */
+    fun postSticky(value: Any) {
+        postSticky(value::class.java.canonicalName!!, value)
     }
 
     /**

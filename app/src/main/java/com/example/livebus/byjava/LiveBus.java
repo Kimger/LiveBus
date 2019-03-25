@@ -58,6 +58,14 @@ public class LiveBus {
      * 黏性事件订阅
      */
     @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribeSticky(Class<T> tClass) {
+        return (BusData<T>) subscribeSticky(tClass.getCanonicalName(), tClass.getCanonicalName(), tClass);
+    }
+
+    /**
+     * 黏性事件订阅
+     */
+    @SuppressWarnings("unchecked")
     public <T> BusData<T> subscribeSticky(Object tag, Object eventKey) {
         return (BusData<T>) subscribeSticky(tag, eventKey, Object.class);
     }
@@ -77,6 +85,15 @@ public class LiveBus {
      */
     public void post(Object value) {
         post(value.getClass().getCanonicalName(), value);
+    }
+
+    /**
+     * 黏性事件(只能发送实体类)
+     *
+     * @param value 要发送的消息
+     */
+    public void postSticky(Object value) {
+        postSticky(value.getClass().getCanonicalName(), value);
     }
 
     /**
