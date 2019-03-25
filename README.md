@@ -79,6 +79,8 @@ LiveBus.Companion.getDefault().postValue(eventKey,value);
 implementation 'androidx.appcompat:appcompat:1.1.0-alpha03' 
 ```
 
+   检查ComponentActivity有没有实现LifecycleOwner接口，Kotlin的'implementation 'androidx.core:core-ktx:1.0.0''依赖有一些版本没有实现     LifecycleOwner接口
+
    请使用此版本或者更高版本的appcompat依赖，推荐使用最新版
    
    如果你的依赖版本没有集成Lifecycle，需要自己的BaseActivity去实现LifecycleOwner接口并重写getLifecycle()方法
