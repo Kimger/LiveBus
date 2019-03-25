@@ -1,5 +1,6 @@
 package com.example.livebus.byjava;
 
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 public class LiveBus {
     private Map<Object, List<BusData<Object>>> events = new HashMap<>();
+    private Map<Object, List<Object>> cacheMsg = new HashMap<>();
 
     public static LiveBus getDefault() {
         return SingletonHolder.instance;
@@ -30,22 +32,80 @@ public class LiveBus {
 
 
     /**
-     * @param tag      用来区分不同的订阅者，必传并且唯一
-     * @param eventKey 事件的key
+     * 普通事件订阅
      */
+    @SuppressWarnings("unchecked")
     public <T> BusData<T> subscribe(Object tag, Object eventKey) {
         return (BusData<T>) subscribe(tag, eventKey, Object.class);
     }
 
     /**
+     * 普通事件订阅
+     */
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribe(Object tag, Object eventKey, Class<T> tClass) {
+        return (BusData<T>) subscribe(tag, eventKey, tClass, false);
+    }
+
+    /**
+     * 黏性事件订阅
+     */
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribeSticky(Object tag, Object eventKey) {
+        return (BusData<T>) subscribeSticky(tag, eventKey, Object.class);
+    }
+
+    /**
+     * 黏性事件订阅
+     */
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribeSticky(Object tag, Object eventKey, Class<T> tClass) {
+        return (BusData<T>) subscribe(tag, eventKey, tClass, true);
+    }
+
+
+    public void post(Object eventKey, Object value) {
+        checkNotNull(eventKey, "eventKey不可为空");
+        List<BusData<Object>> observers = events.get(eventKey);
+        if (observers != null) {
+            for (BusData<Object> observer : observers) {
+                observer.reset();
+                observer.postValue(value);
+            }
+        }
+    }
+
+    public void postSticky(Object eventKey, Object value) {
+        checkNotNull(eventKey, "eventKey不可为空");
+        List<BusData<Object>> observers = events.get(eventKey);
+        if (!cacheMsg.containsKey(eventKey)) {
+            ArrayList<Object> msgs = new ArrayList<>();
+            msgs.add(value);
+            cacheMsg.put(eventKey, msgs);
+        } else {
+            List<Object> msgs = cacheMsg.get(eventKey);
+            msgs.add(value);
+        }
+        if (observers != null) {
+            for (BusData<Object> observer : observers) {
+                observer.reset();
+                observer.postValue(value);
+            }
+        }
+    }
+
+
+    /**
+     * 核心代码
      *
-     * @param tag
-     * @param eventKey
-     * @param tClass 传递的消息类型
-     * @param <T>
+     * @param tag      订阅者tag
+     * @param eventKey 事件key
+     * @param tClass   传递的消息类型
+     * @param isSticky 是否是黏性事件
      * @return
      */
-    public <T> BusData<T> subscribe(Object tag, Object eventKey, Class<T> tClass) {
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribe(Object tag, Object eventKey, Class<T> tClass, boolean isSticky) {
         checkNotNull(tag, "tag不可为空并且唯一");
         checkNotNull(eventKey, "eventKey不可为空");
         if (!events.containsKey(eventKey)) {
@@ -53,21 +113,33 @@ public class LiveBus {
             BusData<Object> busData = new BusData<>(tag);
             observers.add(busData);
             events.put(eventKey, observers);
+            if (isSticky) checkCacheMsg(eventKey);
             return (BusData<T>) busData;
         }
         List<BusData<Object>> observers = events.get(eventKey);
+        assert observers != null;
         for (BusData<Object> observer : observers) {
             if (observer.isThis(tag)) {
+                if (isSticky) checkCacheMsg(eventKey);
                 return (BusData<T>) observer;
             }
         }
         BusData<Object> busData = new BusData<>(tag);
         observers.add(busData);
+        if (isSticky) checkCacheMsg(eventKey);
         return (BusData<T>) busData;
     }
 
-    public <T> void postValue(Object eventKey, T value) {
-        checkNotNull(eventKey, "eventKey不可为空");
+    private void checkCacheMsg(Object eventKey) {
+        if (cacheMsg.containsKey(eventKey)) {
+            for (Object o : cacheMsg.get(eventKey)) {
+                notify(eventKey, o);
+            }
+            cacheMsg.remove(eventKey);
+        }
+    }
+
+    private void notify(Object eventKey, Object value) {
         List<BusData<Object>> observers = events.get(eventKey);
         if (observers != null) {
             for (BusData<Object> observer : observers) {

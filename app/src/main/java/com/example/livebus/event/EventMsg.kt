@@ -1,5 +1,9 @@
 package com.example.livebus.event
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+
 /**
  * @author Kimger
  * @email kimgerxue@gmail.com
@@ -7,7 +11,5 @@ package com.example.livebus.event
  * @description
  */
 class EventMsg constructor(var msg: String){
-
-
 
 }
