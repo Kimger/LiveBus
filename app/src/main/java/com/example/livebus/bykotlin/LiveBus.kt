@@ -1,8 +1,6 @@
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * @author Kimger
@@ -44,7 +42,7 @@ class LiveBus {
      * 普通事件订阅
      */
     fun <T> subscribe(eventKey: Any, clazz: Class<T>): BusData<T> {
-        return subscribe(tag, eventKey, clazz, false)
+        return subscribe(tag, eventKey, clazz, false) as BusData<T>
     }
 
     /**
@@ -79,7 +77,7 @@ class LiveBus {
      * 黏性事件订阅
      */
     fun <T> subscribeSticky(eventKey: Any, clazz: Class<T>): BusData<T> {
-        return subscribe(tag, eventKey, clazz, true)
+        return subscribe(tag, eventKey, clazz, true) as BusData<T>
     }
 
     /**
@@ -93,7 +91,7 @@ class LiveBus {
      * 黏性事件订阅
      */
     fun <T> subscribeSticky(tag: Any, eventKey: Any, clazz: Class<T>): BusData<T> {
-        return subscribe(tag, eventKey, clazz, true)
+        return subscribe(tag, eventKey, clazz, true) as BusData<T>
     }
 
     /**
