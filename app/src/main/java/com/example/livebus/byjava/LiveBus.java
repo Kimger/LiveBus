@@ -1,3 +1,5 @@
+package com.example.livebus.byjava;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
