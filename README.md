@@ -8,13 +8,13 @@ LiveBus.kt使用Kotlin实现
 
 # 用法
 
-### post(param eventKey,param value)
+## post(param eventKey,param value)
 - eventKey:事件key
 - value:事件
-### postSticky(param eventKey,param value)
+## postSticky(param eventKey,param value)
 同上，支持黏性事件（先发送，再订阅）
 
-### subscribe(param tag,param eventKey)
+## subscribe(param tag,param eventKey)
 
 - tag:事件订阅者唯一标识，不可为空并且唯一
 - eventKey:事件key
@@ -22,7 +22,7 @@ LiveBus.kt使用Kotlin实现
 Kotlin 在方法名后传递消息类型泛型 subscribe<T>()
 Java 在方法名前传递消息类型泛型 <T>subscribe()
 
-### subscribe(param tag,param eventKey,param class)
+## subscribe(param tag,param eventKey,param class)
 
 <font color=#bc261a size = 4>使用此方法无需传入泛型，返回类型的判断依照传入的class参数来判断</font>
 
@@ -30,8 +30,10 @@ Java 在方法名前传递消息类型泛型 <T>subscribe()
 - eventKey:事件key
 - class:事件消息类型
 
-### subscribeSticky
+## subscribeSticky
 黏性时间订阅，使用方法同上
+
+
 ------
 
 ### Kotlin
