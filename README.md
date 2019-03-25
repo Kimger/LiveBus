@@ -80,3 +80,5 @@ implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
 ```
 
    请使用此版本或者更高版本的appcompat依赖，推荐使用最新版
+   
+   如果你的依赖版本没有集成Lifecycle，需要自己的BaseActivity去实现LifecycleOwner接口并重写getLifecycle()方法
