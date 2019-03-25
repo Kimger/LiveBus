@@ -30,6 +30,13 @@ public class LiveBus {
         static LiveBus instance = new LiveBus();
     }
 
+    /**
+     * 普通事件订阅
+     */
+    @SuppressWarnings("unchecked")
+    public <T> BusData<T> subscribe(Class<T> tClass) {
+        return (BusData<T>) subscribe(tClass.getCanonicalName(), tClass.getCanonicalName(), tClass);
+    }
 
     /**
      * 普通事件订阅
@@ -63,7 +70,21 @@ public class LiveBus {
         return (BusData<T>) subscribe(tag, eventKey, tClass, true);
     }
 
+    /**
+     * 普通事件(只能发送实体类)
+     *
+     * @param value 要发送的消息
+     */
+    public void post(Object value) {
+        post(value.getClass().getCanonicalName(), value);
+    }
 
+    /**
+     * 普通事件
+     *
+     * @param eventKey 发送事件key
+     * @param value    要发送的消息
+     */
     public void post(Object eventKey, Object value) {
         checkNotNull(eventKey, "eventKey不可为空");
         List<BusData<Object>> observers = events.get(eventKey);
@@ -75,6 +96,12 @@ public class LiveBus {
         }
     }
 
+    /**
+     * 黏性事件
+     *
+     * @param eventKey 发送事件key
+     * @param value    要发送的消息
+     */
     public void postSticky(Object eventKey, Object value) {
         checkNotNull(eventKey, "eventKey不可为空");
         List<BusData<Object>> observers = events.get(eventKey);
@@ -163,7 +190,16 @@ public class LiveBus {
         }
 
         boolean isThis(Object tag) {
-            return (this.tag.hashCode() == tag.hashCode()) && (this.tag.getClass().equals(tag.getClass()));
+            if (tag instanceof String) {
+                if (this.tag.equals(tag)) {
+                    return true;
+                }
+                if (this.tag.getClass().getCanonicalName().equals(tag.getClass().getCanonicalName())) {
+                    this.tag = tag;
+                    return true;
+                }
+            }
+            return false;
         }
 
         void reset() {

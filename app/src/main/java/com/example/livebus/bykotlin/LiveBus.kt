@@ -27,6 +27,13 @@ class LiveBus {
     /**
      * 普通事件订阅
      */
+    fun <T> subscribe(clazz: Class<T>): BusData<T> {
+        return subscribe(clazz.canonicalName!!, clazz.canonicalName!!, clazz) as BusData<T>
+    }
+
+    /**
+     * 普通事件订阅
+     */
     fun <T> subscribe(tag: Any, eventKey: Any): BusData<T> {
         return subscribe(tag, eventKey, Any::class.java) as BusData<T>
     }
@@ -50,6 +57,14 @@ class LiveBus {
      */
     fun <T> subscribeSticky(tag: Any, eventKey: Any, clazz: Class<T>): BusData<T> {
         return subscribe(tag, eventKey, clazz, true)
+    }
+
+    /**
+     * 普通事件(只能发送实体类)
+     * @param value 要发送的消息
+     */
+    fun post(value: Any) {
+        post(value::class.java.canonicalName!!, value)
     }
 
     /**
@@ -163,7 +178,7 @@ class LiveBus {
                     return true
                 }
             }
-            if (this.tag.javaClass.simpleName == tag.javaClass.simpleName) {
+            if (this.tag.javaClass.canonicalName == tag.javaClass.canonicalName) {
                 this.tag = tag
                 return true
             }
