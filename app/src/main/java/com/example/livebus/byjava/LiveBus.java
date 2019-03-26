@@ -1,7 +1,9 @@
 package com.example.livebus.byjava;
 
+import android.app.Activity;
 import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -52,8 +54,8 @@ public class LiveBus {
      * 普通事件订阅
      */
     @SuppressWarnings("unchecked")
-    public <T> BusData<T> subscribe(Object eventKey, Class<T> tClass) {
-        return (BusData<T>) subscribe(tag, eventKey, tClass, false);
+    public <T> BusData<T> subscribe(Object tag, Class<T> tClass) {
+        return (BusData<T>) subscribe(tag, tClass.getCanonicalName(), tClass, false);
     }
 
     /**
@@ -100,8 +102,8 @@ public class LiveBus {
      * 黏性事件订阅
      */
     @SuppressWarnings("unchecked")
-    public <T> BusData<T> subscribeSticky(Object eventKey, Class<T> tClass) {
-        return (BusData<T>) subscribe(tag, eventKey, tClass, true);
+    public <T> BusData<T> subscribeSticky(Object tag, Class<T> tClass) {
+        return (BusData<T>) subscribe(tag, tClass.getCanonicalName(), tClass, true);
     }
 
     /**
@@ -245,6 +247,12 @@ public class LiveBus {
             if (this.tag.equals(tag)) {
                 this.tag = tag;
                 return true;
+            }
+            if (this.tag instanceof LifecycleOwner && tag instanceof LifecycleOwner) {
+                if (this.tag.getClass().getCanonicalName().equals(tag.getClass().getCanonicalName())) {
+                    this.tag = tag;
+                    return true;
+                }
             }
             return false;
         }

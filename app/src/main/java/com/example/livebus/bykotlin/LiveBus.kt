@@ -216,9 +216,15 @@ class LiveBus {
         }
 
         fun isThis(tag: Any): Boolean {
-            if (this.tag == tag) {
+            if (this.tag === tag) {
                 this.tag = tag
                 return true
+            }
+            if (this.tag is LifecycleOwner && tag is LifecycleOwner) {
+                if (this.tag.javaClass.canonicalName === tag.javaClass.canonicalName) {
+                    this.tag = tag
+                    return true
+                }
             }
             return false
         }
