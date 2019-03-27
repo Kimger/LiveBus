@@ -1,9 +1,6 @@
 package com.example.livebus.byjava;
 
-import android.app.Activity;
-import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -143,7 +140,6 @@ public class LiveBus {
         List<BusData<Object>> observers = events.get(eventKey);
         if (observers != null) {
             for (BusData<Object> observer : observers) {
-                observer.reset();
                 observer.postValue(value);
             }
         }
@@ -168,7 +164,6 @@ public class LiveBus {
         }
         if (observers != null) {
             for (BusData<Object> observer : observers) {
-                observer.reset();
                 observer.postValue(value);
             }
         }
@@ -223,7 +218,6 @@ public class LiveBus {
         List<BusData<Object>> observers = events.get(eventKey);
         if (observers != null) {
             for (BusData<Object> observer : observers) {
-                observer.reset();
                 observer.postValue(value);
             }
         }
@@ -231,7 +225,7 @@ public class LiveBus {
 
 
     public class BusData<T> extends MutableLiveData<T> implements OnChangedListener {
-        private boolean isFitst = true;
+        private boolean needChange = true;
         private Object tag;
 
         BusData(Object tag) {
@@ -240,7 +234,7 @@ public class LiveBus {
 
         @Override
         public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> observer) {
-            super.observe(owner, new ObserverWarpper<>(isFitst, observer, this));
+            super.observe(owner, new ObserverWarpper<>(needChange, observer, this));
         }
 
         boolean isThis(Object tag) {
@@ -257,31 +251,43 @@ public class LiveBus {
             return false;
         }
 
+        @Override
+        public void postValue(T value) {
+            reset();
+            super.postValue(value);
+        }
+
+        @Override
+        public void setValue(T value) {
+            reset();
+            super.setValue(value);
+        }
+
         void reset() {
-            isFitst = true;
+            needChange = true;
         }
 
         @Override
         public void onChanged() {
-            isFitst = false;
+            needChange = false;
         }
     }
 
     private class ObserverWarpper<T> implements Observer<T> {
 
-        private boolean isFirst;
+        private boolean needChange;
         private Observer observer;
         private OnChangedListener listener;
 
-        ObserverWarpper(boolean isFirst, Observer observer, OnChangedListener listener) {
-            this.isFirst = isFirst;
+        ObserverWarpper(boolean needChange, Observer observer, OnChangedListener listener) {
+            this.needChange = needChange;
             this.observer = observer;
             this.listener = listener;
         }
 
         @Override
         public void onChanged(T t) {
-            if (isFirst) {
+            if (needChange) {
                 observer.onChanged(t);
                 listener.onChanged();
             }

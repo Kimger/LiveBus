@@ -120,7 +120,6 @@ class LiveBus {
         val observers = events[eventKey]
         if (observers != null) {
             for (item in observers) {
-                item.reset()
                 item.postValue(value)
             }
         }
@@ -144,7 +143,6 @@ class LiveBus {
         }
         if (arrayList != null) {
             for (item in arrayList) {
-                item.reset()
                 item.postValue(value)
             }
         }
@@ -197,7 +195,6 @@ class LiveBus {
         val observers = events[eventKey]
         if (observers != null) {
             for (item in observers) {
-                item.reset()
                 item.postValue(value)
             }
         }
@@ -205,14 +202,24 @@ class LiveBus {
 
     class BusData<T> constructor(private var tag: Any) : MutableLiveData<T>(), OnChangedListener {
 
-        private var isFirst = true
+        private var needChange = true
 
         override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
-            super.observe(owner, ObserverWarpper(observer, isFirst, this))
+            super.observe(owner, ObserverWarpper(observer, needChange, this))
         }
 
-        fun reset() {
-            isFirst = true
+        override fun setValue(value: T) {
+            reset()
+            super.setValue(value)
+        }
+
+        override fun postValue(value: T) {
+            reset()
+            super.postValue(value)
+        }
+
+        private fun reset() {
+            needChange = true
         }
 
         fun isThis(tag: Any): Boolean {
@@ -230,19 +237,19 @@ class LiveBus {
         }
 
         override fun onChanged() {
-            isFirst = false
+            needChange = false
         }
 
     }
 
     class ObserverWarpper<T> constructor(
-        private var observer: Observer<T>, private var isFirst: Boolean,
+        private var observer: Observer<T>, private var needChange: Boolean,
         private var listener: OnChangedListener
     ) :
         Observer<T> {
 
         override fun onChanged(t: T) {
-            if (isFirst) {
+            if (needChange) {
                 observer.onChanged(t)
                 listener.onChanged()
             }
